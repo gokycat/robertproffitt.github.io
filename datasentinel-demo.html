@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataSentinel Governance Demo - AI Advises, Rules Decide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .architecture-principle {
+            background: #f8f9fa;
+            border-left: 4px solid #2a5298;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .architecture-principle h3 {
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .architecture-principle p {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .demo-content {
+            padding: 2rem;
+        }
+
+        .interaction {
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #2a5298;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .user-request {
+            background: #e3f2fd;
+            padding: 1.25rem;
+            border-left: 4px solid #2196F3;
+        }
+
+        .user-request h4 {
+            color: #1976D2;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-request p {
+            color: #424242;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .ai-response {
+            background: #f5f5f5;
+            padding: 1.25rem;
+        }
+
+        .query-box {
+            background: #263238;
+            color: #aed581;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .governance-block {
+            background: #ffebee;
+            border: 2px solid #ef5350;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .governance-block .block-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .governance-block .block-icon {
+            font-size: 2rem;
+            margin-right: 0.75rem;
+        }
+
+        .governance-block h4 {
+            color: #c62828;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .governance-block .violation-type {
+            background: #ef5350;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .governance-block .reason {
+            color: #424242;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .governance-directive {
+            background: white;
+            border: 2px dashed #ef5350;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+
+        .governance-directive h5 {
+            color: #c62828;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .governance-directive ol {
+            margin-left: 1.5rem;
+            color: #424242;
+        }
+
+        .governance-directive li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border: 2px solid #66bb6a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .success-box .success-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .success-box .success-icon {
+            font-size: 2rem;
+            margin-right: 0.75rem;
+        }
+
+        .success-box h4 {
+            color: #2e7d32;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .data-preview {
+            background: white;
+            border-radius: 6px;
+            padding: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+
+        .table-columns {
+            background: #fff9c4;
+            border-left: 4px solid #fbc02d;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+        }
+
+        .table-columns h5 {
+            color: #f57f17;
+            margin-bottom: 0.75rem;
+        }
+
+        .column-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+            color: #424242;
+        }
+
+        .column-item {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .key-takeaway {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .key-takeaway h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .key-takeaway p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ DataSentinel Governance Demo</h1>
+            <div class="subtitle">Neuro-Symbolic AI Governance in Action</div>
+        </div>
+
+        <div class="architecture-principle">
+            <h3>🎯 Core Principle: "AI Advises, Rules Decide"</h3>
+            <p>DataSentinel implements a fail-closed governance architecture where symbolic rules (not the LLM) make final decisions about data access and operations. The AI provides intent, but deterministic rules enforce policy.</p>
+        </div>
+
+        <div class="demo-content">
+            <!-- Step 1: List Tables -->
+            <div class="interaction" id="step1">
+                <div class="user-request">
+                    <span class="step-number">Step 1</span>
+                    <h4>👤 User Request</h4>
+                    <p>"Show me the tables in the database"</p>
+                </div>
+                <div class="ai-response">
+                    <div class="query-box">
+                        db2-sentinel:list_tables()
+                    </div>
+                    <div class="success-box">
+                        <div class="success-header">
+                            <span class="success-icon">✅</span>
+                            <h4>Query Successful</h4>
+                        </div>
+                        <p><strong>Found 6 tables:</strong> EMPLOYEES, DEPARTMENTS, PROJECTS, MY_TABLE, OBJECT_METRICS, TEST</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: SELECT * Blocked -->
+            <div class="interaction hidden" id="step2">
+                <div class="user-request">
+                    <span class="step-number">Step 2</span>
+                    <h4>👤 User Request</h4>
+                    <p>"Show me the projects table data"</p>
+                </div>
+                <div class="ai-response">
+                    <div class="query-box">
+                        SELECT * FROM PROJECTS
+                    </div>
+                    <div class="governance-block">
+                        <div class="block-header">
+                            <span class="block-icon">🚫</span>
+                            <h4>QUERY BLOCKED</h4>
+                        </div>
+                        <div class="violation-type">SELECT STAR VIOLATION</div>
+                        <div class="reason">
+                            <strong>Reason:</strong> SELECT * is not allowed as it may expose PII columns (SALARY, SSN, PASSWORD, CREDIT_CARD, API_KEY). Please explicitly list only the columns you need.
+                        </div>
+                        <div class="governance-directive">
+                            <h5>🎯 GOVERNANCE DIRECTIVE — AI MUST FOLLOW</h5>
+                            <ol>
+                                <li>Report this block to the user exactly as shown</li>
+                                <li>Explain why the query was blocked</li>
+                                <li>Ask the user how they want to proceed</li>
+                                <li><strong>DO NOT reformulate or attempt semantic variations</strong></li>
+                            </ol>
+                            <p style="margin-top: 0.75rem; color: #c62828; font-weight: 600;">
+                                Attempting workarounds violates the "AI advises, rules decide" architecture and is classified as "gaming".
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Get Columns -->
+            <div class="interaction hidden" id="step3">
+                <div class="user-request">
+                    <span class="step-number">Step 3</span>
+                    <h4>🤖 AI Response</h4>
+                    <p>"Let me check what columns are in the PROJECTS table..."</p>
+                </div>
+                <div class="ai-response">
+                    <div class="query-box">
+                        db2-sentinel:get_table_columns('PROJECTS')
+                    </div>
+                    <div class="table-columns">
+                        <h5>📋 PROJECTS Table Columns (7 total)</h5>
+                        <div class="column-list">
+                            <div class="column-item">✓ PROJECT_ID</div>
+                            <div class="column-item">✓ PROJECT_NAME</div>
+                            <div class="column-item">✓ DEPT_ID</div>
+                            <div class="column-item">✓ START_DATE</div>
+                            <div class="column-item">✓ END_DATE</div>
+                            <div class="column-item">✓ STATUS</div>
+                            <div class="column-item">✓ BUDGET</div>
+                        </div>
+                        <p style="margin-top: 1rem; color: #2e7d32; font-weight: 600;">All columns are safe - no PII detected</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Explicit SELECT Success -->
+            <div class="interaction hidden" id="step4">
+                <div class="user-request">
+                    <span class="step-number">Step 4</span>
+                    <h4>🤖 AI Response</h4>
+                    <p>"Now querying with explicit column names..."</p>
+                </div>
+                <div class="ai-response">
+                    <div class="query-box">
+                        SELECT PROJECT_ID, PROJECT_NAME, DEPT_ID, START_DATE, 
+                               END_DATE, STATUS, BUDGET 
+                        FROM PROJECTS
+                    </div>
+                    <div class="success-box">
+                        <div class="success-header">
+                            <span class="success-icon">✅</span>
+                            <h4>Query Successful - 8 Rows Returned</h4>
+                        </div>
+                        <div class="data-preview">
+<pre>{
+  "PROJECT_ID": 1,
+  "PROJECT_NAME": "AI Platform Development",
+  "DEPT_ID": 1,
+  "START_DATE": "2024-01-01",
+  "END_DATE": "2024-12-31",
+  "STATUS": "Active",
+  "BUDGET": "2000000.00"
+},
+{
+  "PROJECT_ID": 2,
+  "PROJECT_NAME": "Customer Portal Redesign",
+  "DEPT_ID": 1,
+  "START_DATE": "2024-03-01",
+  "END_DATE": "2024-09-30",
+  "STATUS": "Active",
+  "BUDGET": "500000.00"
+},
+... (6 more projects)</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: DELETE Blocked -->
+            <div class="interaction hidden" id="step5">
+                <div class="user-request">
+                    <span class="step-number">Step 5</span>
+                    <h4>👤 User Request</h4>
+                    <p>"Remove that data from the table, I want to repopulate it"</p>
+                </div>
+                <div class="ai-response">
+                    <div class="query-box">
+                        DELETE FROM PROJECTS
+                    </div>
+                    <div class="governance-block">
+                        <div class="block-header">
+                            <span class="block-icon">🚫</span>
+                            <h4>QUERY BLOCKED</h4>
+                        </div>
+                        <div class="violation-type">DESTRUCTIVE OPERATION</div>
+                        <div class="reason">
+                            <strong>Reason:</strong> Destructive operation 'DELETE' is blocked by governance policy. Only SELECT and INSERT operations are permitted.
+                        </div>
+                        <div class="governance-directive">
+                            <h5>🎯 GOVERNANCE DIRECTIVE — AI MUST FOLLOW</h5>
+                            <ol>
+                                <li>Report this block to the user exactly as shown</li>
+                                <li>Explain why the query was blocked</li>
+                                <li>Ask the user how they want to proceed</li>
+                                <li><strong>DO NOT reformulate or attempt semantic variations</strong></li>
+                            </ol>
+                            <p style="margin-top: 0.75rem; color: #c62828; font-weight: 600;">
+                                Attempting workarounds violates the "AI advises, rules decide" architecture and is classified as "gaming".
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Takeaway -->
+            <div class="key-takeaway hidden" id="takeaway">
+                <h3>🎯 Key Takeaway</h3>
+                <p>The governance system enforced policy at every step. When the AI attempted SELECT *, the rules decided to block it. When the AI attempted DELETE, the rules decided to block it. The LLM provides intent and adapts its approach, but <strong>rules make the final decision</strong>. This prevents gaming behavior and ensures consistent, auditable governance.</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Next Step ▶</button>
+            <button class="btn btn-secondary hidden" id="resetBtn" onclick="resetDemo()">Reset Demo 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function nextStep() {
+            if (currentStep <= totalSteps) {
+                const stepElement = document.getElementById(`step${currentStep}`);
+                if (stepElement) {
+                    stepElement.classList.remove('hidden');
+                    stepElement.classList.add('animate-in');
+                }
+                currentStep++;
+
+                if (currentStep > totalSteps) {
+                    document.getElementById('takeaway').classList.remove('hidden');
+                    document.getElementById('takeaway').classList.add('animate-in');
+                    document.getElementById('nextBtn').classList.add('hidden');
+                    document.getElementById('resetBtn').classList.remove('hidden');
+                }
+            }
+        }
+
+        function resetDemo() {
+            currentStep = 1;
+            for (let i = 1; i <= totalSteps; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (step) {
+                    step.classList.add('hidden');
+                    step.classList.remove('animate-in');
+                }
+            }
+            document.getElementById('takeaway').classList.add('hidden');
+            document.getElementById('nextBtn').classList.remove('hidden');
+            document.getElementById('resetBtn').classList.add('hidden');
+            
+            // Show first step
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('step1').classList.add('animate-in');
+            currentStep = 2;
+        }
+
+        // Auto-show first step on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('step1').classList.remove('hidden');
+                document.getElementById('step1').classList.add('animate-in');
+                currentStep = 2;
+            }, 500);
+        });
+    </script>
+</body>
+</html>
